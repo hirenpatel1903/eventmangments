@@ -1,0 +1,54 @@
+{% extends 'auth/base.html' %}
+<!-- LOAD STATIC -->
+{% load static %}
+<!-- SET TITLE -->
+{% block title %} {% include 'base/partials/title.html' with title='Login' %} {% endblock %} {% block content %}
+<div class="col-md-1 pe-md-0">
+    <div>
+
+    </div>
+</div>
+<div class="col-md-10 ps-md-0">
+    <div class="auth-form-wrapper px-4 py-5">
+
+        <a href="#" class="noble-ui-logo d-block mb-2"><img src="{% static 'assets/images/logo/logo.png' %}" width="180px"></a>
+        <h5 class="text-muted fw-normal mb-4">Welcome back! Log in to your account.</h5>
+        <form action="" method="post" class="forms-sample" id="loginFormValidation" novalidate="novalidate">
+            {% csrf_token %} {{ form.as_p }}
+            
+            {% include "errormessage.html" %}
+            <!-- ERROR SHOW -->
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" id="email" placeholder="Email" value="">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Password">
+                <span class="p-viewer2 toggle-password "><i class="info" data-feather="eye"></i></span>
+            </div>
+            <div class="row">
+                <div class="form-check mb-3 col-8">
+                    <input type="checkbox" class="form-check-input" id="authCheck">
+                    <label class="form-check-label" for="authCheck">Remember me</label>
+                </div>
+                <div class="form-check col-4">
+                    <a class="text-primary" href="{% url 'forgotPassword' %}">Forgot Password?</a>
+                </div>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0 text-white">Login</button>
+            </div>
+            <a href="{% url 'register' %}" class="d-block mt-3 text-muted">Not a Registered Vendor with Events yet? Register Now</a>
+            <label class="form-check-label" for="terms_confirmed">
+                24x7 Customer to Event's <a href="{% url 'contactDetails' %}"><em>Contact Support</em></a>.
+            </label>
+        </form>
+    </div>
+</div>
+<div class="col-md-1 pe-md-0">
+    <div>
+
+    </div>
+</div>
+{% endblock content %}

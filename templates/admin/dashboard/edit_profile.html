@@ -1,0 +1,299 @@
+{% extends 'base/base.html' %}
+<!-- LOAD STATIC -->
+{% load static %}
+<!-- SET TITLE -->
+{% block title %} 
+{% include 'base/partials/title.html' with title='Edit Profile' %} 
+{% endblock %}
+{% block custom_css %}
+<!-- Plugin css for this page -->
+<link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}"/>
+<!-- End plugin css for this page -->
+{% endblock %} 
+{% block content %}
+
+<div class="page-content">
+  <nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'dashboard'%}">Dashboard</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Edit Profile</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-title">Edit Profile</h6>          
+          <form action="{% url 'profileStore' USER_DATA.id %}" method="POST" id="createFormValidation" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="mb-3">
+                  <label class="form-label">Name</label>
+                  <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{% if USER_DATA%}{{USER_DATA.name}}{% endif %}">
+                </div>
+              </div><!-- Col -->
+              <div class="col-sm-4">
+                <div class="mb-3">
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="{% if USER_DATA%}{{USER_DATA.email}}{% endif %}">
+                </div>
+              </div><!-- Col -->              
+              <div class="col-sm-4">
+                <div class="mb-3">
+                    <label class="form-label">Mobile Number</label>
+                    <input type="text" class="form-control" id="mobile_number" name="mobile_number" placeholder="Mobile Number" value="{% if USER_DATA%}{{USER_DATA.mobile_number}}{% endif %}">
+                </div>
+              </div><!-- Col -->
+            </div>
+            <div class="row">           
+                <div class="col-sm-4">
+                  <div class="mb-3">
+                    <label class="form-label">City</label>
+                    <input type="text" class="form-control" id="city" name="city" placeholder="City" value="{% if USER_DATA%}{{USER_DATA.city}}{% endif %}">
+                  </div>
+                </div><!-- Col -->
+                <div class="col-sm-4">
+                    <div class="mb-3">
+                      <label class="form-label">State</label>
+                      <input type="text" class="form-control" id="state" name="state" placeholder="State" value="{% if USER_DATA%}{{USER_DATA.state}}{% endif %}">
+                    </div>
+                  </div><!-- Col -->
+                  <div class="col-sm-4">
+                    <div class="mb-3">
+                      <label class="form-label">Country</label>
+                      <input type="text" class="form-control" id="country" name="country" placeholder="Country" value="{% if USER_DATA%}{{USER_DATA.country}}{% endif %}">
+                    </div>
+                  </div><!-- Col -->
+              </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="mb-3">
+                      <label class="form-label">Address</label>
+                      <textarea class="form-control" id="address" name="address" rows="2" placeholder="Address">{% if USER_DATA%}{{USER_DATA.address}}{% endif %}</textarea>
+                    </div>
+                </div><!-- Col -->
+                <div class="col-sm-6">
+                    <div class="mb-3">
+                      <label class="form-label">Description (option)</label>
+                      <textarea class="form-control" id="description" name="description" rows="2" placeholder="Description">{% if USER_DATA%}{{USER_DATA.description}}{% endif %}</textarea>
+                    </div>
+                </div><!-- Col -->
+            </div><!-- Row -->
+            <div class="row">                
+                <div class="col-sm-4">
+                    <div class="mb-3">
+                        <label for="category" class="form-label">Category</label>
+                        <select class="form-select" id="category" name="category">
+                            {% for CATEGORYS_LIST in CATEGORY_LIST %}
+                                <option value="{{CATEGORYS_LIST.id}}" {% if USER_CATEGORY == CATEGORYS_LIST.id %}{{'selected'}}{% endif %}>{{CATEGORYS_LIST.value}}</option>
+                            {% empty %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="mb-3">
+                        <label for="catering" class="form-label">Do you provide catering?</label>
+                        <select class="form-select" id="catering" name="catering">
+                            {% for CATERINGS_LIST in CATERING_LIST %}
+                                <option value="{{CATERINGS_LIST.id}}" {% if USER_CATERING == CATERINGS_LIST.id %}{{'selected'}}{% endif %}>{{CATERINGS_LIST.value}}</option>
+                            {% empty %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="mb-3">
+                        <label for="max_capacity" class="form-label">Max guest capacity you can handle?</label>
+                        <select class="form-select" id="max_capacity" name="max_capacity">
+                            {% for MAX_CAPACITYS_LIST in MAX_CAPACITY_LIST %}
+                                <option value="{{MAX_CAPACITYS_LIST.basemodel_ptr_id}}" {% if USER_MAX_CAPACITY == MAX_CAPACITYS_LIST.basemodel_ptr_id %}{{'selected'}}{% endif %}>{{MAX_CAPACITYS_LIST.value}}</option>
+                            {% empty %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="mb-3">
+                        <label for="number_of_events" class="form-label">How much  number of events you have hosted so far?</label>
+                        <select class="form-select" id="number_of_events" name="number_of_events">
+                            {% for NUMBERS_OF_EVENTS_LIST in NUMBER_OF_EVENTS_LIST %}
+                                <option value="{{NUMBERS_OF_EVENTS_LIST.basemodel_ptr_id}}" {% if USER_NUMBER_OF_EVENT == NUMBERS_OF_EVENTS_LIST.basemodel_ptr_id %}{{'selected'}}{% endif %}>{{NUMBERS_OF_EVENTS_LIST.value}}</option>
+                            {% empty %}
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-sm-8">
+                    <div class="mb-3">
+                        <label for="media" class="form-label">Attach your media such as venue, menu or any other relevant information such as your past events</label>
+                        <input type="file" class="form-control" name="media" id="media" multiple="multiple" accept="image/png, image/jpg, image/jpeg">
+                    </div>
+                </div>
+            </div><!-- Row -->
+            <br>
+            <input type="hidden" name="userID" value="{% if USER_DATA%}{{USER_DATA.id}}{% endif %}">
+            <button type="submit" class="btn btn-primary me-2">Submit</button>
+          </form>  
+            <hr> 
+            <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Media Details</h5>
+                        <div class="row row-cols-1 row-cols-md-4 g-4">
+                            {% for IMG in IMAGES_LIST %}
+                            <div class="col-sm-3">
+                                <div class="card">
+                                    <a type="submit" class="close deletebutton" data-id="{{IMG.id}}">
+                                        <span class="right_side_icon"><i class="mdi mdi-close"></i></span>
+                                    </a>
+                                    <img src="{{ MEDIA_URL }}{{ IMG.url }}" class="card-img-top" alt="{{IMG.url}}">
+                                </div>
+                            </div>
+                            {% empty %}
+                            <p class="card-text mb-3">No Media Details Found.</p>
+                            {% endfor %}
+                        </div>
+                    </div>                
+                </div>
+            </div> 
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+{% block custom_js %}
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#createFormValidation').validate({
+            rules: {
+                name: {
+                    required: true,
+                    maxlength: 50,
+                },
+                email: {
+                    required: true,
+                    maxlength: 50,
+                    email: true,
+                    remote: {
+                        url: "/checkEmailUser/",
+                        type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            email: function() { return $('input[name=email]').val(); },
+                            userID: function() { return $('input[name=userID]').val(); },
+                        },
+                    },
+                },
+                address: {
+                    required: true,
+                },
+                country: {
+                    required: true,
+                    maxlength: 50,
+                },
+                state: {
+                    required: true,
+                    maxlength: 50,
+                },
+                city: {
+                    required: true,
+                    maxlength: 50,
+                },
+                //description: {
+                //  required: true,
+                //},
+                mobile_number: {
+                    required: true,
+                    validphone: true,
+                    maxlength: 15,
+                    remote: {
+                        url: "/checkMobilenumberUser/",
+                        type: "POST",
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        data: {
+                            mobile_number: function() { return $('input[name=mobile_number]').val(); },
+                            userID: function() { return $('input[name=userID]').val(); },
+                        },
+                    },
+                },
+                category: {
+                    required: true,
+                },
+                catering: {
+                    required: true,
+                },
+                max_capacity: {
+                    required: true,
+                },
+                number_of_events: {
+                    required: true,
+                },
+                media: {
+                    extension: "jpg|jpeg|png"
+                },
+            },
+            messages: {
+                mobile_number: { remote: "Mobile number is already taken." },
+                email: { remote: "Email is already taken." },
+            },
+            submitHandler: function(form) {
+                if ($("#createFormValidation").validate().checkForm()) {
+                    $('.requestbutton').addClass('disabled').attr('disabled', true);
+                    $(".cancelbutton").addClass("disabled");
+                    form.submit();
+                }
+            }
+        });
+
+        // Delete Lead Media
+        $('.deletebutton').on('click',function(e) {
+            e.preventDefault();
+            var MEDIA_ID = $(this).attr('data-id');      
+            Swal.fire({
+            title: "Delete?",
+            text: "Do you really want to delete? Please note action can't be reverted.",
+            confirmButtonColor: '#F35E38',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, I am sure!',
+            cancelButtonText: "No, cancel it!",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                $.post("/media/delete/"+MEDIA_ID, {
+                    id:MEDIA_ID,
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                }).done(function(data) {
+                    const Toast = Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 1000,
+                        timerProgressBar: true,
+                    });
+                    
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Deleted Successfully.!!'
+                    })
+    
+                    setTimeout(function(){
+                        location.reload();
+                    }, 1100);         
+                });
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

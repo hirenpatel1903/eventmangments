@@ -1,0 +1,117 @@
+{% extends 'base/base.html' %}
+<!-- LOAD STATIC -->
+{% load static %}
+<!-- SET TITLE -->
+{% block title %} {% include 'base/partials/title.html' with title='Vendors Details' %} {% endblock %} {% block content %}
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}"/>
+<!-- End plugin css for this page -->
+{% endblock %} 
+<div class="page-content">
+  <nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'vendorIndex'%}">Vendors</a></li>
+      <li class="breadcrumb-item active" aria-current="page">View Vendor Details</li>
+    </ol>
+  </nav>
+
+    <div class="row">
+        <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">                    
+                    <h5 class="card-title">View Vendor Details</h5>
+                    <div class="row col-md-12">
+                        <div class="col-12 col-md-4 col-xl-12">
+                            <label class="card-title">Name:</label> {% if VENDOR_ALL_DATA.name %} {{VENDOR_ALL_DATA.name|capfirst}} {% else %} {{'N/A'}}{% endif %}
+                        </div>
+                    </div>
+                    <div class="row col-md-12">
+                        <div class="col-12 col-md-4 col-xl-12">
+                            <label class="card-title">Mobile Number:</label> {% if VENDOR_ALL_DATA.mobile_number %} {{VENDOR_ALL_DATA.mobile_number}} {% else %} {{'N/A'}}{% endif %}
+                        </div>
+                    </div>
+                    <div class="row col-md-12">
+                        <div class="col-12 col-md-4 col-xl-12">
+                            <label class="card-title">Email:</label> {% if VENDOR_ALL_DATA.email %} {{VENDOR_ALL_DATA.email}} {% else %} {{'N/A'}}{% endif %}
+                        </div>
+                    </div>
+                    <div class="row col-md-12">
+                        <div class="col-12 col-md-4 col-xl-12">
+                            <label class="card-title">Address:</label> {% if VENDOR_ALL_DATA.address %} {{VENDOR_ALL_DATA.address|capfirst}} {% else %} {{'N/A'}}{% endif %}
+                        </div>
+                    </div>
+                    <div class="row col-md-12">
+                        <div class="col-12 col-md-4 col-xl-12">
+                            <label class="card-title">City:</label> {% if VENDOR_ALL_DATA.city %} {{VENDOR_ALL_DATA.city|capfirst}} {% else %} {{'N/A'}}{% endif %}
+                        </div>
+                    </div>
+                    <div class="row col-md-12">
+                        <div class="col-12 col-md-4 col-xl-12">
+                            <label class="card-title">State:</label> {% if VENDOR_ALL_DATA.state %} {{VENDOR_ALL_DATA.state|capfirst}} {% else %} {{'N/A'}}{% endif %}
+                        </div>
+                    </div>
+                    <div class="row col-md-12">
+                        <div class="col-12 col-md-4 col-xl-12">
+                            <label class="card-title">Country:</label> {% if VENDOR_ALL_DATA.country %} {{VENDOR_ALL_DATA.country|capfirst}} {% else %} {{'N/A'}}{% endif %}
+                        </div>
+                    </div>
+                    <div class="row col-md-12">
+                        <div class="col-12 col-md-4 col-xl-12">
+                            <label class="card-title">Description:</label> {% if VENDOR_ALL_DATA.description %} {{VENDOR_ALL_DATA.description|capfirst}} {% else %} {{'N/A'}}{% endif %}
+                        </div>
+                    </div>
+                    <div class="row col-md-12">
+                        <div class="col-12 col-md-4 col-xl-12">
+                            <label class="card-title">Status:</label> 
+                            {% if VENDOR_ALL_DATA.status == "ACTIVE" %}
+                            <span class="badge bg-success">{{ VENDOR_ALL_DATA.status }}</span>
+                            {% elif VENDOR_ALL_DATA.status == "DISABLE" %}
+                            <span class="badge bg-warning">{{ VENDOR_ALL_DATA.status }}</span>
+                            {% endif %}  
+                        </div>
+                    </div>
+                    <div class="row col-md-12">
+                        <div class="col-12 col-md-4 col-xl-12">
+                            <label class="card-title">Category:</label> {% if CATEGORY.value %} {{CATEGORY.value|capfirst}} {% else %} {{'N/A'}}{% endif %}
+                        </div>
+                    </div>
+                    <div class="row col-md-12">
+                        <div class="col-12 col-md-4 col-xl-12">
+                            <label class="card-title">Catering:</label> {% if CATERING.value %} {{CATERING.value|capfirst}} {% else %} {{'N/A'}}{% endif %}
+                        </div>
+                    </div>
+                    <div class="row col-md-12">
+                        <div class="col-12 col-md-4 col-xl-12">
+                            <label class="card-title">Max Capacity:</label> {% if MAX_CAPACITY.value %} {{ MAX_CAPACITY.value }} {% else %} {{'N/A'}}{% endif %}
+                        </div>
+                    </div>
+                    <div class="row col-md-12">
+                        <div class="col-12 col-md-4 col-xl-12">
+                            <label class="card-title">Number Of Event:</label> {% if NUMBER_OF_EVENTS.value %} {{ NUMBER_OF_EVENTS.value }} {% else %} {{'N/A'}}{% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Media Details</h5>
+                    <div class="row row-cols-1 row-cols-md-2 g-4">
+                        {% for IMG in IMAGES_LIST %}
+                        <div class="col">
+                            <div class="card">
+                                <img src="{{ MEDIA_URL }}{{ IMG.url }}" class="card-img-top" alt="{{IMG.url}}">
+                            </div>
+                        </div>
+                        {% empty %}
+                            <p class="card-text mb-3">No Media Details Found.</p>
+                        {% endfor %}
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

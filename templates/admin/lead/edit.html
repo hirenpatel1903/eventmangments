@@ -1,0 +1,177 @@
+{% extends 'base/base.html' %}
+<!-- LOAD STATIC -->
+{% load static %}
+<!-- SET TITLE -->
+{% block title %} {% include 'base/partials/title.html' with title='Leads Details' %} {% endblock %} {% block content %}
+
+<div class="page-content">
+  <nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'leadIndex'%}">Leads</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Edit Lead</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-title">Edit Lead</h6>          
+          <form action="{% url 'leadUpdate' LEAD_ID %}" method="POST" id="createFormValidation" enctype="multipart/form-data">
+            {% csrf_token %}            
+            {{ form.as_p }}
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="mb-3">
+                  <label class="form-label">Name</label>
+                  <input type="text" class="form-control" id="name" name="name" placeholder="Name" value="{% if LEAD_ALL_DATA%}{{LEAD_ALL_DATA.name}}{% endif %}">
+                </div>
+              </div><!-- Col -->
+              <div class="col-sm-4">
+                <div class="mb-3">
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="Email" value="{% if LEAD_ALL_DATA%}{{LEAD_ALL_DATA.email}}{% endif %}">
+                </div>
+              </div><!-- Col -->
+              <div class="col-sm-4">
+                <div class="mb-3">
+                  <label class="form-label">Mobile Number</label>
+                  <input type="text" class="form-control" id="mobile_number" name="mobile_number" placeholder="Mobile Number" value="{% if LEAD_ALL_DATA%}{{LEAD_ALL_DATA.mobile_number}}{% endif %}">
+                </div>
+              </div><!-- Col -->
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="mb-3">
+                  <label class="form-label">City</label>
+                  <input type="text" class="form-control" id="city" name="city" placeholder="City" value="{% if LEAD_ALL_DATA%}{{LEAD_ALL_DATA.city}}{% endif %}">
+                </div>
+              </div><!-- Col -->
+              <div class="col-sm-4">
+                <div class="mb-3">
+                  <label class="form-label">State</label>
+                  <input type="text" class="form-control" id="state" name="state" placeholder="State" value="{% if LEAD_ALL_DATA%}{{LEAD_ALL_DATA.state}}{% endif %}">
+                </div>
+              </div><!-- Col -->
+              <div class="col-sm-4">
+                <div class="mb-3">
+                  <label class="form-label">Country</label>
+                  <input type="text" class="form-control" id="country" name="country" placeholder="Country" value="{% if LEAD_ALL_DATA%}{{LEAD_ALL_DATA.country}}{% endif %}">
+                </div>
+              </div><!-- Col -->
+            </div><!-- Row -->            
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="mb-3">
+                  <label class="form-label">Address</label>
+                  <textarea class="form-control" id="address" name="address" rows="3" placeholder="Address">{% if LEAD_ALL_DATA%}{{LEAD_ALL_DATA.address}}{% endif %}</textarea>
+                </div>
+              </div><!-- Col -->
+              <div class="col-sm-6">
+                <div class="mb-3">
+                  <label class="form-label">Description</label>
+                  <textarea class="form-control" id="description" name="description" rows="3" placeholder="Description">{% if LEAD_ALL_DATA%}{{LEAD_ALL_DATA.description}}{% endif %}</textarea>
+                </div>
+              </div><!-- Col -->
+            </div><!-- Row -->
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="mb-3">
+                  <label class="form-label">Date of Event</label>
+                  <input type="date" class="form-control" id="date_of_event" name="date_of_event" value="{% if LEAD_ALL_DATA%}{{LEAD_ALL_DATA.date_of_event|date:"Y-m-d"}}{% endif %}">
+                </div>
+              </div><!-- Col -->
+              <div class="col-sm-6">
+                <div class="mb-3">
+                  <label for="time_of_event" class="form-label">Time of Event</label>
+                  <input type="time" class="form-control" name="time_of_event" id="time_of_event" value="{% if LEAD_ALL_DATA%}{{LEAD_ALL_DATA.time_of_event|time:"H:i"}}{% endif %}">
+                </div>
+              </div><!-- Col -->
+            </div><!-- Row -->
+            
+            <button type="submit" class="btn btn-primary me-2">Submit</button>
+            <a href="{% url 'leadIndex' %}" class="btn btn-secondary cancelbutton">Cancel</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+{% block custom_js %}
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.10.3/moment.min.js"></script>
+<script>
+  $(document).ready(function () {
+    $('#createFormValidation').validate({
+      rules: {
+          name: {
+              required: true,
+              maxlength: 50,
+          },
+          email: {
+              required: true,
+              maxlength: 50,
+              email: true
+          },
+          mobile_number: {
+              required: true,
+              minlength: 10,
+          },
+          address: {
+              required: true,
+          },
+          country: {
+              required: true,
+              maxlength: 50,
+          },
+          state: {
+              required: true,
+              maxlength: 50,
+          },
+          city: {
+              required: true,
+              maxlength: 50,
+          },
+          date_of_event: {
+              required: true,
+          },
+          time_of_event: {
+              required: true,
+          },
+          description: {
+              required: true,
+          },
+      },
+      submitHandler: function(form) {
+          if ($("#createFormValidation").validate().checkForm()) {
+              $('.requestbutton').addClass('disabled').attr('disabled', true);
+              $(".cancelbutton").addClass("disabled");
+              form.submit();
+          }
+      }
+    })
+
+    //$("#date_of_event").on("change", function() {
+      //this.setAttribute(
+        //"data-date", 
+        //moment(this.value, "d-m-Y").format( this.getAttribute("data-date-format"))
+      //);
+    //}).trigger("change");
+
+    $(function(){     
+      var d = new Date(),        
+          h = d.getHours(),
+          m = d.getMinutes();
+          ampm = h >= 12 ? 'pm' : 'am';
+      if(h < 10) h = '0' + h; 
+      if(m < 10) m = '0' + m; 
+      $('input[type="time"][value="h:i"]').each(function(){ 
+        $(this).attr({'value': h + ':' + m + ' ' + ampm});
+      });
+    });
+
+  });
+
+</script>
+{% endblock %}

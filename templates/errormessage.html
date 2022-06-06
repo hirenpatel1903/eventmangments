@@ -1,0 +1,41 @@
+{% if errormessage %}
+<script src="/static/assets/vendors/sweetalert2/sweetalert2.min.js"></script>
+<script>
+    var m = "{{errormessage}}";
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+      });
+    
+    Toast.fire({
+        icon: 'error',
+        title: m
+    }) 
+</script>
+{% endif %} 
+
+{% if successmessage %}
+<script src="/static/assets/vendors/sweetalert2/sweetalert2.min.js"></script>
+<script>
+    var m = "{{successmessage}}";
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+      });
+    
+    Toast.fire({
+        icon: 'success',
+        title: m
+    }) 
+</script>
+{% endif %} 

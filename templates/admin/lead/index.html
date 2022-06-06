@@ -1,0 +1,154 @@
+{% extends 'base/base.html' %}
+<!-- LOAD STATIC -->
+{% load static %}
+<!-- SET TITLE -->
+{% block title %} {% include 'base/partials/title.html' with title='Leads Details' %} {% endblock %} 
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}"/>
+<link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}"/>
+<!-- End plugin css for this page -->
+{% endblock %} 
+{% block content %}
+
+<div class="page-content">
+  <nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'leadIndex'%}">Leads</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Leads Details</li>
+    </ol>
+  </nav>
+  
+  
+  <div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+      <div class="card">        
+        <div class="card-header pt-1.25 pl-0 pr-0 pd-0">
+          <a href="{% url 'leadCreate' %}" class="btn btn-primary float-end"><i data-feather="plus"></i> Add New</a>
+        </div>
+        <div class="card-body">
+          <h6 class="card-title d-flex justify-content-between align-items-center">Leads Details</h6>
+          <br>
+          {% include "errormessage.html" %}
+          <div class="table-responsive">
+            <table id="datalist_table" class="table" length="{{PAGE_SIZE}}">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Mobile Number</th>
+                  <th>City</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+{% block custom_js %}
+<!-- Plugin js for this page -->
+<script src="{% static 'assets/vendors/datatables.net/jquery.dataTables.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+<script src="{% static 'assets/js/data-table.js' %}"></script>
+<!-- End plugin js for this page -->
+<script>
+  $(document).ready(function () {
+    var initTable1 = function () {
+      var table = $('#datalist_table');
+      let ajax_url = "{% url 'leadData' %}";
+      let page_length = Math.round(parseInt($('#datalist_table').attr('length')));
+      $.fn.DataTable.ext.pager.numbers_length = 5;
+      
+      // begin first table
+      var oTable = table.DataTable({
+        processing: true,
+        serverSide: true,
+        bLengthChange: false,
+        pagingType: "simple_numbers",
+        sScrollY: '1100px',
+        pageLength: page_length,
+        drawCallback: function( settings ) {
+            feather.replace();
+        },
+        ajax: {
+          url: ajax_url,
+          type: 'post',
+          data: { 
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+          },
+        },
+        columns: [
+          {data: 'name', name: 'name', bSortable:false},
+          {data: 'email', name: 'email', bSortable:false},
+          {data: 'mobile_number', name: 'mobile_number', bSortable:false},
+          {data: 'city', name: 'city', bSortable:false},          
+          {data: 'id', bSortable:false,
+            render: function ( data, type, full, meta) {
+              view_url="/lead/view/"+data;
+              assign_url="/lead/assign/"+data;
+              edit_url="/lead/edit/"+data;
+              whatsapp_url="{{WHATSAPP_URL}}"+full.mobile_number+"{{WHATSAPP_MESSAGE}}"
+
+              return "<div class=\"form-check\"><a class=\"assignbutton\" data-id=\"" + data + "\" href=\"" + assign_url + "\"><i data-feather=\"user-plus\"></i></a> <a class=\"viewbutton\" data-id=\"" + data + "\" href=\"" + view_url + "\"><i data-feather=\"eye\"></i></a> <a class=\"editbutton\" data-id=\"" + data + "\" href=\"" + edit_url + "\"><i data-feather=\"edit\"></i></a> <a class=\"editbutton\" target=\"_blank\" href=\"" + whatsapp_url + "\"><i class=\"mdi mdi-whatsapp mdi-24px\" aria-hidden=\"true\"></i></a></div>"
+            }
+          },
+        ],
+      });
+
+      $('#datalist_table_filter input').unbind();
+      $('#datalist_table_filter input').bind('keyup', function(e) {
+        if(e.keyCode == 13) {
+          oTable.search(this.value).draw(); 
+        }
+        console.log(e.keyCode);
+      });
+    };
+    
+    initTable1();
+
+    // Delete Lead 
+    $('#datalist_table').on('click', '.deletebutton', function(e) {
+      e.preventDefault();
+      var user_id = $(this).attr('data-id');      
+      Swal.fire({
+        title: "Delete?",
+        text: "Are you sure want to delete this record ?",
+        confirmButtonColor: '#F35E38',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, I am sure!',
+        cancelButtonText: "No, cancel it!",
+      }).then((result) => {
+          if (result.isConfirmed) {
+            $.post("/lead/delete/"+user_id, {
+              id:user_id,
+              csrfmiddlewaretoken: '{{ csrf_token }}',
+            }).done(function(data) {
+                const Toast = Swal.mixin({
+                  toast: true,
+                  position: 'top-end',
+                  showConfirmButton: false,
+                  timer: 1000,
+                  timerProgressBar: true,
+                });
+              
+                Toast.fire({
+                  icon: 'success',
+                  title: 'Deleted Successfully.!!'
+                })
+
+                setTimeout(function(){
+                  $( "#datalist_table" ).load( "{{ request.path }} #datalist_table" );
+                  location.reload();
+                }, 1100);         
+            });
+          }
+        });
+    });
+  });
+
+</script>
+{% endblock %}

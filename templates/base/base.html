@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include "base/partials/meta_data.html" %}
+	<!-- PAGE TITLE HERE -->
+	{% block title %}{% endblock %}
+	{% include "base/partials/base_styles.html" %}
+    {% block custom_css %}{% endblock %}
+
+</head>
+
+<body>
+    <div class="main-wrapper">
+
+        <div id="flash_message" class="d-none">
+                <div id="success">{{ SESSION_DATA.flash_success_message }}</div>
+                <div id="danger">{{ SESSION_DATA.flash_error_message }}</div>
+        </div>
+
+        <!--  Sidebar -->
+        {% block sidebar_wrapper %}
+            {% include 'base/partials/sidebar.html' %}
+        {% endblock sidebar_wrapper%}
+
+        <div class="page-wrapper">
+
+            <!-- Nav header -->
+            {% include "base/partials/nav_header.html" %}  
+    
+            <!--Content body-->
+            {% block content %}{% endblock %}
+    
+            <!--   Footer -->
+            {% include "base/partials/footer.html" %}
+
+        </div>
+    </div>
+    <!--  Main wrapper end-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+
+    {% include "base/partials/base_scripts.html" %}
+    {% block custom_js %}
+    {% endblock %}
+</body>
+</html>

@@ -1,0 +1,42 @@
+{% extends 'auth/base.html' %}
+<!-- LOAD STATIC -->
+{% load static %}
+<!-- SET TITLE -->
+{% block title %} {% include 'base/partials/title.html' with title='Contact Support' %} {% endblock %} {% block content %}
+<div class="col-md-1 pe-md-0">
+    <div>
+
+    </div>
+</div>
+<div class="col-md-10 ps-md-0">
+    <div class="auth-form-wrapper px-4 py-5">
+        <a href="#" class="noble-ui-logo d-block mb-2"><img src="{% static 'assets/images/logo/logo.png' %}" width="180px"></a>
+        <h5 class="text-muted fw-normal mb-4">Let's connect.</h5>
+
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item border-0"><a class="text-body" href="mailto:hello@event.com"><i class="mdi mdi-email mdi-16px"></i> hello@events.com</a></li>
+            <li class="list-group-item border-0"><a class="text-body" href="tel:918989829413"><i class="mdi mdi-phone mdi-16px"></i> +918989829413</a></li>
+            <li class="list-group-item border-0"><a class="text-body" target="_blank" href="{{WHATSAPP_URL}}918989829413{{WHATSAPP_MESSAGE}}"><i class="mdi mdi-whatsapp mdi-16px"></i> +918989829413</a></li>
+
+            
+        </ul>
+
+        <br>
+        <br>
+        {% if user.role == "ADMIN" or user.role == "VENDOR" %}
+        <label class="form-check-label">
+            Back to Event's <a href="{% url 'dashboard' %}"><em>Dashboard</em></a>.
+        </label>
+        {% else %}
+        <label class="form-check-label">
+            Already to Event's <a href="{% url 'login' %}"><em>Login</em></a> and Looks like you're new here! <a href="{% url 'register' %} "><em>Register</em></a>.
+        </label>        
+        {% endif %}
+    </div>
+</div>
+<div class="col-md-1 pe-md-0">
+    <div>
+
+    </div>
+</div>
+{% endblock content %}

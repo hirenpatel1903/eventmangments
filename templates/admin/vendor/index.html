@@ -1,0 +1,166 @@
+{% extends 'base/base.html' %}
+<!-- LOAD STATIC -->
+{% load static %}
+<!-- SET TITLE -->
+{% block title %} 
+{% include 'base/partials/title.html' with title='Vendor Details' %} 
+{% endblock %} 
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}"/>
+<!-- End plugin css for this page -->
+{% endblock %} 
+{% block content %}
+
+<div class="page-content">
+  <nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'vendorIndex'%}">Vendor</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Vendor Details</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-title d-flex justify-content-between align-items-center">Vendor Details </h6>
+          {% include "errormessage.html" %}         
+          <div class="table-responsive app-table">
+            <table id="datalist_table" class="table" length="{{PAGE_SIZE}}">
+              <thead>
+                <tr>
+                  <th>NAME</th>
+                  <th>EMAIL</th>
+                  <th>MOBILE NUMBER</th>
+                  <th>STATUS</th>
+                  <th>ACTION</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %} 
+{% block custom_js %}
+<!-- Plugin js for this page -->
+<script src="{% static 'assets/vendors/datatables.net/jquery.dataTables.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+<script src="{% static 'assets/js/data-table.js' %}"></script>
+<!-- End plugin js for this page -->
+
+<script>
+  $(document).ready(function () {
+
+    var initTable1 = function () {
+      var table = $('#datalist_table');
+      let ajax_url = "{% url 'vendorData' %}";
+      let page_length = Math.round(parseInt($('#datalist_table').attr('length')));
+      $.fn.DataTable.ext.pager.numbers_length = 5;
+      
+      // begin first table
+      var oTable = table.DataTable({
+        processing: true,
+        serverSide: true,
+        bLengthChange: false,
+        pageLength: page_length,
+        drawCallback: function( settings ) {
+            feather.replace();
+        },
+        ajax: {
+          url: ajax_url,
+          type: 'post',
+          data: { 
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+          },
+        },
+        columns: [
+          {data: 'name', name: 'name', bSortable:false},
+          {data: 'email', name: 'email', bSortable:false},
+          {data: 'mobile_number', name: 'mobile_number', bSortable:false},
+          {data: 'status', 
+            render: function (data, type, full, meta) {
+              if(data == 'DISABLE'){
+                return "<div class=\"d-grid\"><span class=\"badge bg-warning\">" + data + "</span></div>";
+              }else if(data == 'ACTIVE'){
+                return "<div class=\"d-grid\"><span class=\"badge bg-success\">" + data + "</span></div>";
+              }
+            }, searchable: false, sortable: false
+          },
+          {data: 'id', bSortable:false,
+            render: function ( data, type, full, meta) {
+              base_url="/vendor/view/"+data;
+              let select_done="";
+              if(full.status=='ACTIVE'){
+                select_done='checked';
+              }else if(full.status=='DISABLE'){
+                select_done='';
+              }
+              return "<div class=\"row\"><div class=\"col-3\"><a class=\"viewbutton\" data-id=\"" + data + "\" href=\"" + base_url + "\"><i data-feather=\"eye\"></i></a></div><div class=\"col-9\"><div class=\"form-check form-switch mb-2\"><input type=\"checkbox\" class=\"form-check-input change_status\" data-status=\"" + data + "\" id=\"change_status" + data + "\" name=\"change_status\" value=\""+ full.status +"\" " + select_done + "></div></div></div>"
+            }
+          },
+        ],
+      });
+
+      $('#datalist_table_filter input').unbind();
+      $('#datalist_table_filter input').bind('keyup', function(e) {
+        if(e.keyCode == 13) {
+          oTable.search(this.value).draw(); 
+        }
+        console.log(e.keyCode);
+      });
+    };
+    
+    initTable1();
+
+    // Change Status 
+  $('#datalist_table').on('change', '.change_status', function() {
+
+    var user_id = $(this).attr('data-status');
+    var status_val = $(this).val();
+    
+    Swal.fire({
+    title: "Are you sure?",
+    text: "would you like to change the status.!",
+    confirmButtonColor: '#F35E38',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, I am sure!',
+    cancelButtonText: "No, cancel it!",
+    }).then((result) => {
+        if (result.isConfirmed) {
+        
+          $.post("/vendor/changeStatus/", {
+              id:user_id,
+              status_val:status_val,
+              csrfmiddlewaretoken: '{{ csrf_token }}' ,
+              timeout: 1000
+          });       
+
+          const Toast = Swal.mixin({
+              toast: true,
+              position: 'top-end',
+              showConfirmButton: false,
+              timer: 1000,
+              timerProgressBar: true,
+          });
+          
+          Toast.fire({
+              icon: 'success',
+              title: 'Status Updated Successfully.!!'
+          });
+
+          setTimeout(function(){
+            $( "#datalist_table" ).load( "{{ request.path }} #datalist_table" );
+            location.reload();
+          }, 1100); 
+        }else{
+          $(this).prop('checked', status_val=="ACTIVE");
+        }
+    });
+  }); 
+  });
+</script>
+{% endblock %}

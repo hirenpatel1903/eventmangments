@@ -1,0 +1,143 @@
+{% extends 'base/base.html' %}
+<!-- LOAD STATIC -->
+{% load static %}
+<!-- SET TITLE -->
+{% block title %} {% include 'base/partials/title.html' with title='Lead Listing' %} {% endblock %} 
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}"/>
+<link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}"/>
+<!-- End plugin css for this page -->
+{% endblock %} 
+{% block content %}
+
+<div class="page-content">
+  <nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'leadIndexVendor'%}">Leads</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Accepted Leads Details</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-title d-flex justify-content-between align-items-center">Accepted Leads Details</h6>
+          <div class="table-responsive app-table">
+            <table id="datalist_table" class="table" length="{{PAGE_SIZE}}">
+              <thead>
+                <tr>
+                  <th>Lead Details</th>
+                  <th>Mobile Number</th>
+                  <th>Comment</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+{% block custom_js %}
+<!-- Plugin js for this page -->
+<script src="{% static 'assets/vendors/datatables.net/jquery.dataTables.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+<script src="{% static 'assets/js/data-table.js' %}"></script>
+<!-- End plugin js for this page -->
+<script>  
+  $(document).ready(function () {
+    var initTable1 = function () {
+      var table = $('#datalist_table');
+      let ajax_url = "{% url 'vendorLeadData' %}";
+      let page_length = Math.round(parseInt($('#datalist_table').attr('length')));
+      $.fn.DataTable.ext.pager.numbers_length = 5;
+      
+      // begin first table
+      var oTable = table.DataTable({
+        processing: true,
+        serverSide: true,
+        bLengthChange: false,
+        pagingType: "simple_numbers",
+        sScrollY: '1100px',
+        pageLength: page_length,
+        drawCallback: function( settings ) {
+            feather.replace();
+        },
+        ajax: {
+          url: ajax_url,
+          type: 'post',
+          data: { 
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+          },
+        },
+        columns: [
+          {data: 'leadID.name', bSortable:false,
+            render: function ( data, type, full, meta) {
+              return "<p><strong>Name: </strong>"+data+"</p><p><strong>City: </strong>"+full.leadID.city+"</p><p><strong>Email: </strong>"+full.leadID.email+"</p>"
+            }
+          },
+          {data: 'leadID.mobile_number', bSortable:false},
+          {data: 'last_comments', bSortable:false},
+          {data: 'lead_status.value',
+            render: function (data, type, full, meta) {
+              if(data == 'Rejected'){
+                return "<div class=\"d-grid\"><span class=\"badge bg-danger\">" + data + "</span></div>";
+              }else if(data == 'Accepted'){
+                return "<div class=\"d-grid\"><span class=\"badge bg-success\">" + data + "</span></div>";
+              }else {
+                return "<div class=\"d-grid\"><span class=\"badge bg-warning\">" + data + "</span></div>";
+              }
+            }, searchable: false, sortable: false
+          },
+          {data: 'id', bSortable:false,
+            render: function ( data, type, full, meta) {
+              view_url="/vendor/lead/view/"+data;
+              whatsapp_url="{{WHATSAPP_URL}}"+full.leadID.mobile_number+"{{WHATSAPP_MESSAGE}}"
+              let add_class,button_dis="";
+              if(full.lead_status.value=='Rejected'){
+                add_class='sweetButton';
+                button_dis='buttondis';
+              }else{
+                add_class='';
+                button_dis='';
+              }
+
+              return "<div class=\"form-check "+add_class+"\"><a class=\"viewbutton "+button_dis+"\" data-id=\"" + data + "\" href=\"" + view_url + "\"><i data-feather=\"eye\"></i></a> <a class=\"editbutton "+button_dis+"\" target=\"_blank\" href=\"" + whatsapp_url + "\"><i class=\"mdi mdi-whatsapp mdi-24px\" aria-hidden=\"true\"></i></a></div>"
+            }
+          },
+        ],
+      });
+
+      $('#datalist_table_filter input').unbind();
+      $('#datalist_table_filter input').bind('keyup', function(e) {
+        if(e.keyCode == 13) {
+          oTable.search(this.value).draw(); 
+        }
+      });
+    };
+    
+    initTable1();
+
+    $('#datalist_table').on('click', '.sweetButton', function() {
+      var m = "Status is Rejected so you can't view the lead.";
+      const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
+      
+      Toast.fire({
+          icon: 'error',
+          title: m
+      }) 
+    });
+  });
+</script>
+{% endblock %}

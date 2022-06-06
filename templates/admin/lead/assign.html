@@ -1,0 +1,169 @@
+{% extends 'base/base.html' %}
+<!-- LOAD STATIC -->
+{% load static %}
+<!-- SET TITLE -->
+{% block title %} {% include 'base/partials/title.html' with title='Leads Details' %} {% endblock %} {% block content %}
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}"/>
+<!-- End plugin css for this page -->
+{% endblock %} 
+<div class="page-content">
+  <nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'leadIndex'%}">Leads</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Assign Lead</li>
+    </ol>
+  </nav>
+
+    <div class="row">
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                <h6 class="card-title">Assign Lead To Vendor</h6>          
+                <form action="{% url 'leadAssignStore' LEAD_ID %}" method="POST" id="createFormValidation" enctype="multipart/form-data">
+                    {% csrf_token %}   
+                    
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="mb-3">
+                                <label for="userID" class="form-label">Vendor Name List</label>
+                                <select name="userID"  id="userID" class="js-example-basic-multiple form-select" multiple="multiple">
+                                    {% for USER_DATA in USER_ALL_DATA %}
+                                        <option value="{{USER_DATA.id}}">{{USER_DATA.name|capfirst}}</option>
+                                    {% empty %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <input type="hidden" class="form-control" id="leadID" name="leadID" value="{% if LEAD_ALL_DATA%}{{LEAD_ALL_DATA.id}}{% endif %}">
+                    </div>                    
+                    <button type="submit" class="btn btn-primary me-2">Submit</button>
+                    <a href="{% url 'leadIndex' %}" class="btn btn-secondary cancelbutton">Cancel</a>
+                </form>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-12 grid-margin stretch-card">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="card-title">Assign Vendor list</h6>          
+                    {% include "errormessage.html" %}
+                    <div class="table-responsive">
+                        <table id="datalist_table" class="table">
+                        <thead>
+                            <tr>
+                            <th>No</th>
+                            <th>Name</th>
+                            <th>Mobile Number</th>
+                            <th>Email</th>
+                            {% comment %} <th>Action</th> {% endcomment %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ASSIGN_DATA in ASSIGN_ALL_DATA %}
+                            <tr id="{{forloop.counter}}">
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ASSIGN_DATA.vendorID.name|capfirst}}</td>
+                                <td>{{ASSIGN_DATA.vendorID.mobile_number}}</td>
+                                <td>{{ASSIGN_DATA.vendorID.email}}</td>
+                                {% comment %} <td>
+                                    <div class="form-check">
+                                        <a class="deletebutton" data-id="{{ASSIGN_DATA.id}}" href="{% url 'leadAssignDelete' ASSIGN_DATA.id %}"><i data-feather="trash"></i></a>
+                                    </div>
+                                </td> {% endcomment %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+{% block custom_js %}
+
+<!-- Plugin js for this page -->
+<script src="{% static 'assets/vendors/datatables.net/jquery.dataTables.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+<script src="{% static 'assets/js/data-table.js' %}"></script>
+<!-- End plugin js for this page -->
+<script>
+  $(document).ready(function () {
+      
+    $("#userID").select2({
+        allowClear: true,
+        multiple:true,
+        placeholder: "Select vendor",
+    });
+
+    $('#createFormValidation').validate({
+        rules: {
+            userID: {
+                required: true,
+            },
+        },
+        submitHandler: function(form) {
+            if ($("#createFormValidation").validate().checkForm()) {
+                $('.requestbutton').addClass('disabled').attr('disabled', true);
+                $(".cancelbutton").addClass("disabled");
+                form.submit();
+            }
+        }
+    })
+
+    $("#datalist_table").DataTable({
+        paging: true,
+        bLengthChange: false,
+        searching: false,
+        responsive: true,
+        searchDelay: 500,
+        processing: true,
+        bInfo:false,
+    });
+
+    $('.deletebutton').on('click',function(e) {
+        e.preventDefault();
+        var assign_id = $(this).attr('data-id');      
+        Swal.fire({
+          title: "Delete?",
+          text: "Are you sure want to delete this record ?",
+          confirmButtonColor: '#F35E38',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, I am sure!',
+          cancelButtonText: "No, cancel it!",
+        }).then((result) => {
+            if (result.isConfirmed) {
+              $.post("/lead/assigndelete/"+assign_id, {
+                id:assign_id,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+              }).done(function(data) {
+                  const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true,
+                  });
+                
+                  Toast.fire({
+                    icon: 'success',
+                    title: 'Deleted Successfully.!!'
+                  })
+  
+                  setTimeout(function(){
+                    $( "#datalist_table" ).load( "{{ request.path }} #datalist_table" );
+                    location.reload();
+                  }, 1100);         
+              });
+            }
+          });
+      });
+
+  });
+
+</script>
+{% endblock %}

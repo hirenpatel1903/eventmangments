@@ -1,0 +1,51 @@
+<!-- LOAD STATIC -->
+{% load static %}
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <a href="#" class="sidebar-brand"><img src="{% static 'assets/images/logo/logo.png' %}" width="140px"></a>
+  <div class="sidebar-toggler not-active">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+  <div class="sidebar-body">
+    <ul class="nav">
+      <li class="nav-item nav-category">Main</li>
+      <li class="nav-item {% if request.resolver_match.url_name == 'dashboard' or request.resolver_match.url_name == 'changePassword' or request.resolver_match.url_name == 'profile' %} active {% else %} "" {% endif %}">
+        <a href="{% url 'dashboard' %}" class="nav-link">
+          <i class="link-icon" data-feather="box"></i>
+          <span class="link-title">Dashboard</span>
+        </a>
+      </li>
+
+      {% comment %} Admin Modules {% endcomment %}
+      {% if user.role == "ADMIN" %}
+      <li class="nav-item {% if request.resolver_match.url_name == 'vendorIndex'  or request.resolver_match.url_name == 'vendorView' %} active {% else %} "" {% endif %}">
+        <a href="{% url 'vendorIndex' %}" class="nav-link">
+          <i class="link-icon" data-feather="users"></i>
+          <span class="link-title">Vendor</span>
+        </a>
+      </li>
+      
+      <li class="nav-item {% if request.resolver_match.url_name == 'leadIndex' or request.resolver_match.url_name == 'leadCreate' or request.resolver_match.url_name == 'leadEdit' or request.resolver_match.url_name == 'leadAssign' or request.resolver_match.url_name == 'leadView' %} active {% else %} "" {% endif %}">
+        <a href="{% url 'leadIndex' %}" class="nav-link">
+          <i class="link-icon" data-feather="book-open"></i>
+          <span class="link-title">Leads</span>
+        </a>
+      </li>      
+      {% endif %}
+
+      
+      {% comment %} Vendor Modules {% endcomment %}
+      {% if user.role == "VENDOR" %}
+      <li class="nav-item {% if request.resolver_match.url_name == 'leadIndexVendor' or request.resolver_match.url_name == 'leadViewVendor' %} active {% else %} "" {% endif %}">
+        <a href="{% url 'leadIndexVendor' %}" class="nav-link">
+          <i class="link-icon" data-feather="book-open"></i>
+          <span class="link-title">Leads</span>
+        </a>
+      </li> 
+      {% endif %}
+    </ul>
+  </div>
+</nav>

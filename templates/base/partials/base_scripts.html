@@ -1,0 +1,72 @@
+{% load static %}
+
+
+<!-- core:js -->
+<script src="{% static 'assets/vendors/core/core.js' %}"></script>
+<script src="{% static 'assets/vendors/sweetalert2/sweetalert2.min.js' %}"></script>
+<script src="{% static 'assets/js/jquery.validate.min.js' %}"></script>
+<!-- endinject -->
+
+<!-- Plugin js for this page -->
+<script src="{% static 'assets/vendors/chartjs/Chart.min.js' %}"></script>
+<script src="{% static 'assets/vendors/jquery.flot/jquery.flot.js' %}"></script>
+<script src="{% static 'assets/vendors/jquery.flot/jquery.flot.resize.js' %}"></script>
+<script src="{% static 'assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js' %}"></script>
+<script src="{% static 'assets/vendors/apexcharts/apexcharts.min.js' %}"></script>
+<!-- End plugin js for this page -->
+
+<script src="{% static 'assets/vendors/bootstrap-maxlength/bootstrap-maxlength.min.js' %}"></script>
+<script src="{% static 'assets/vendors/inputmask/jquery.inputmask.min.js' %}"></script>
+<script src="{% static 'assets/vendors/select2/select2.min.js' %}"></script>
+<script src="{% static 'assets/js/select2.js' %}"></script>
+<script src="{% static 'assets/vendors/typeahead.js/typeahead.bundle.min.js' %}"></script>
+<script src="{% static 'assets/vendors/jquery-tags-input/jquery.tagsinput.min.js' %}"></script>
+<script src="{% static 'assets/vendors/dropzone/dropzone.min.js' %}"></script>
+<script src="{% static 'assets/vendors/dropify/dist/dropify.min.js' %}"></script>
+<script src="{% static 'assets/vendors/moment/moment.min.js' %}"></script>
+<script src="{% static 'assets/vendors/tempusdominus-bootstrap-4/tempusdominus-bootstrap-4.js' %}"></script>
+
+
+
+<!-- inject:js -->
+<script src="{% static 'assets/vendors/feather-icons/feather.min.js' %}"></script>
+<script src="{% static 'assets/js/template.js' %}"></script>
+<!-- endinject -->
+
+<script src="{% static 'assets/js/sweet-alert.js' %}"></script>
+
+<!-- Custom js for this page -->
+<script src="{% static 'assets/js/dashboard-light.js' %}"></script>
+<script src="{% static 'assets/js/datepicker.js' %}"></script>
+<!-- End custom js for this page -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/simplePagination.js/1.6/jquery.simplePagination.js"></script>
+
+<!--CREATED BY DEV-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+<script src="{% static 'assets/js/custom_js.js' %}"></script>
+
+<!-- SWEET ALERT MESSAGE SHOW -->
+
+{% if messages %}
+    {% for msg in messages %}
+        <script>
+            var m = "{{ msg }}";
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+                });
+            
+            Toast.fire({
+                icon: '{{ msg.tags }}',
+                title: m
+            }) 
+        </script>
+    {% endfor %}
+{% endif %}

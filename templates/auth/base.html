@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+{% load static %}
+
+<head>
+    {% include "base/partials/meta_data.html" %}
+    <!-- PAGE TITLE HERE -->
+    {% block title %}{% endblock %}
+    <!-- PAFE STYLE HERE -->
+    {% include "base/partials/base_styles.html" %}
+    <!-- CUSTOM CSS -->
+    {% block custom_css %}{% endblock %}
+
+
+</head>
+
+<body>   
+    <div class="main-wrapper">
+        <div class="page-wrapper full-page">
+            <div class="page-content d-flex align-items-center justify-content-center">
+
+                <div class="row w-100 mx-0 auth-page">
+                    <div class="col-md-8 col-xl-6 mx-auto">
+                        <div class="card">
+                            <div class="row">
+                                <!--Content body-->
+                                {% block content %}
+
+                                <!--Content body end-->
+                                {% endblock %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!--Main wrapper end-->
+
+    <!--**********************************
+        Scripts
+    ***********************************-->
+    <!-- Required vendors -->
+    
+
+    {% include "auth/partials/base_scripts.html" %}
+</body>
+</html>

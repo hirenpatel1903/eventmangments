@@ -1,0 +1,126 @@
+{% extends 'auth/base.html' %}
+<!-- LOAD STATIC -->
+{% load static %}
+<!-- SET TITLE -->
+{% block title %} {% include 'base/partials/title.html' with title='Register' %} {% endblock %} {% block content %}
+<div class="col-md-1 pe-md-0">
+    <div>
+
+    </div>
+</div>
+<div class="col-md-10 ps-md-0">
+    <div class="auth-form-wrapper px-4 py-5">
+        <a href="#" class="noble-ui-logo d-block mb-2"><img src="{% static 'assets/images/logo/logo.png' %}" width="180px"></a>
+        <h5 class="text-muted fw-normal mb-4">Create a new account.</h5>
+        {% include "errormessage.html" %}
+        <form action="" method="post" class="forms-sample" id="registerFormValidation" novalidate="novalidate" enctype="multipart/form-data">
+            {% csrf_token %} 
+            
+            <div class="mb-3">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" class="form-control" name="name" id="name" placeholder="Name" value="">
+            </div>
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" name="email" id="email" placeholder="Email" value="">
+            </div>
+            <div class="mb-3">
+                <label for="address" class="form-label">Address</label>
+                <textarea class="form-control" name="address" id="address" rows="2" placeholder="Address"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="city" class="form-label">City</label>
+                <input type="text" class="form-control" name="city" id="city" placeholder="City" value="">
+            </div>
+            <div class="mb-3">
+                <label for="state" class="form-label">State</label>
+                <input type="text" class="form-control" name="state" id="state" placeholder="State" value="">
+            </div>
+            <div class="mb-3">
+                <label for="country" class="form-label">Country</label>
+                <input type="text" class="form-control" name="country" id="country" placeholder="Country" value="">
+            </div>
+            <div class="mb-3">
+                <label for="description" class="form-label">Description (optional)</label>
+                <textarea class="form-control" name="description" id="description" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="mobile_number" class="form-label">Mobile Number</label>
+                <input type="text" class="form-control" name="mobile_number" id="mobile_number" placeholder="Mobile number" value="">
+            </div>
+            <div class="mb-3">
+                <label for="category" class="form-label">Category</label>
+                <select class="form-select" id="category" name="category">
+                    <option selected disabled>Select category</option>
+                    {% for CATEGORYS_LIST in CATEGORY_LIST %}
+                        <option value="{{CATEGORYS_LIST.id}}">{{CATEGORYS_LIST.value}}</option>
+                    {% empty %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="catering" class="form-label">Do you provide catering?</label>
+                <select class="form-select" id="catering" name="catering">
+                    <option selected disabled>Select catering</option>
+                    {% for CATERINGS_LIST in CATERING_LIST %}
+                        <option value="{{CATERINGS_LIST.id}}">{{CATERINGS_LIST.value}}</option>
+                    {% empty %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="max_capacity" class="form-label">Max guest capacity you can handle?</label>
+                <select class="form-select" id="max_capacity" name="max_capacity">
+                    <option selected disabled>Select capacity</option>
+                    {% for MAX_CAPACITYS_LIST in MAX_CAPACITY_LIST %}
+                        <option value="{{MAX_CAPACITYS_LIST.basemodel_ptr_id}}">{{MAX_CAPACITYS_LIST.value}}</option>
+                    {% empty %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="number_of_events" class="form-label">How much  number of events you have hosted so far?</label>
+                <select class="form-select" id="number_of_events" name="number_of_events">
+                    <option selected disabled>Select number</option>
+                    {% for NUMBERS_OF_EVENTS_LIST in NUMBER_OF_EVENTS_LIST %}
+                        <option value="{{NUMBERS_OF_EVENTS_LIST.basemodel_ptr_id}}">{{NUMBERS_OF_EVENTS_LIST.value}}</option>
+                    {% empty %}
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="media" class="form-label">Attach your media such as venue, menu or any other relevant information such as your past events</label>
+                <input type="file" class="form-control" name="media" id="media" multiple="multiple" accept="image/png, image/jpg, image/jpeg">
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" name="password" id="password" placeholder="Password" data-toggle="password">
+                <span class="p-viewer2 toggle-password"><i class="eye" data-feather="eye"></i></span>
+            </div>
+            <div class="mb-3">
+                <label for="password_confirmation" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" name="password_confirmation" id="password_confirmation" placeholder="Confirm Password">
+                <span class="p-viewer2 toggle-password"><i class="eye" data-feather="eye"></i></span>
+            </div>
+            <div class="form-check mb-3">
+                <input type="checkbox" class="form-check-input" id="terms_confirmed" name="terms_confirmed">
+                <label class="form-check-label" for="terms_confirmed">
+                    By continuing, you agree to Event's <a target="_blank" href="{{TERMS_OF_USE_URL}}"><em>Terms of Use</em></a> and <a target="_blank" href="{{PRIVACY_POLICY_URL}}"><em>Privacy Policy</em></a>.
+                </label>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0 text-white">Register</button>                
+            </div>
+            <a href="{% url 'login' %}" class="d-block mt-3 text-muted">Already a vendor? Login</a>
+            <label class="form-check-label">
+                24x7 Customer to Event's <a href="{% url 'contactDetails' %}"><em>Contact Support</em></a>.
+            </label>
+        </form>
+    </div>
+</div>
+<div class="col-md-1 pe-md-0">
+    <div>
+
+    </div>
+</div>
+{% endblock content %}

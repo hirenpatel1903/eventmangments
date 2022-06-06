@@ -1,0 +1,169 @@
+{% extends 'base/base.html' %}
+<!-- LOAD STATIC -->
+{% load static %}
+<!-- SET TITLE -->
+{% block title %} {% include 'base/partials/title.html' with title='Leads Details' %} {% endblock %} {% block content %}
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}"/>
+<!-- End plugin css for this page -->
+{% endblock %} 
+<div class="page-content">
+  <nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'leadIndexVendor'%}">Leads</a></li>
+      <li class="breadcrumb-item active" aria-current="page">View Lead</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+
+    <div class="col-md-6 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-title">View Lead</h6>
+          <form action="{% url 'leadStoreVendor' LEAD_ASSIGN_ID %}" method="POST" id="createFormValidation" novalidate="novalidate" enctype="multipart/form-data">
+            {% csrf_token %}           
+            {{ form.as_p }}
+
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="mb-3">
+                  <label class="form-label">Comment</label>
+                  <textarea class="form-control" id="comments" name="comments" rows="3" placeholder="Comments"></textarea>
+                </div>
+              </div><!-- Col -->
+            </div><!-- Row -->
+
+            <div class="row">
+              <div class="col-sm-12">
+                <div class="mb-3">
+                  <label for="status" class="form-label">Status</label>
+                  <select class="form-select" id="status" name="status">
+                      <option selected disabled>Select status</option>
+                      {% for STATUS in STATUS_LIST %}
+                        <option value="{{STATUS.id}}">{{STATUS.value}}</option>
+                      {% empty %}
+                      {% endfor %}
+                  </select>
+                </div>
+              </div><!-- Col -->
+            </div><!-- Row -->
+            <input type="hidden" class="form-control" id="leadAssignedId" name="leadAssignedId" value="{% if DATA_VIEW%}{{DATA_VIEW.id}}{% endif %}">
+            <input type="hidden" class="form-control" id="leadID" name="leadID" value="{% if DATA_VIEW%}{{DATA_VIEW.leadID_id}}{% endif %}">
+            <input type="hidden" class="form-control" id="vendorID" name="vendorID" value="{% if DATA_VIEW%}{{DATA_VIEW.vendorID.id}}{% endif %}">
+            
+            <button type="submit" class="btn btn-primary me-2">Submit</button>
+            <a href="{% url 'leadIndexVendor' %}" class="btn btn-secondary cancelbutton">Cancel</a>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6 grid-margin stretch-card">
+      <div class="card">
+          <div class="card-body">
+              <h6 class="card-title">View Lead Details</h6>          
+              <div class="row">
+                  <div class="col-12 col-md-4 col-xl-12">
+                      <div class="card">
+                          <div class="card-body">
+                              <div class="row col-md-12">
+                                  <div class="col-12 col-md-4 col-xl-12">
+                                      <label class="card-title">Name:</label> {% if DATA_VIEW.leadID.name %} {{DATA_VIEW.leadID.name|capfirst}} {% endif %}
+                                  </div>
+                              </div>
+                              <div class="row col-md-12">
+                                  <div class="col-12 col-md-4 col-xl-12">
+                                      <label class="card-title">Mobile Number:</label> {% if DATA_VIEW.leadID.mobile_number %} {{DATA_VIEW.leadID.mobile_number}} {% else %} {{'N/A'}}{% endif %}
+                                  </div>
+                              </div>
+                              <div class="row col-md-12">
+                                  <div class="col-12 col-md-4 col-xl-12">
+                                      <label class="card-title">Email:</label> {% if DATA_VIEW.leadID.email %} {{DATA_VIEW.leadID.email}} {% else %} {{'N/A'}}{% endif %}
+                                  </div>
+                              </div>
+                              <div class="row col-md-12">
+                                  <div class="col-12 col-md-4 col-xl-12">
+                                      <label class="card-title">Address:</label> {% if DATA_VIEW.leadID.address %} {{DATA_VIEW.leadID.address|capfirst}} {% else %} {{'N/A'}}{% endif %}
+                                  </div>
+                              </div>
+                              <div class="row col-md-12">
+                                  <div class="col-12 col-md-4 col-xl-12">
+                                      <label class="card-title">City:</label> {% if DATA_VIEW.leadID.city %} {{DATA_VIEW.leadID.city|capfirst}} {% else %} {{'N/A'}}{% endif %}
+                                  </div>
+                              </div>
+                              <div class="row col-md-12">
+                                  <div class="col-12 col-md-4 col-xl-12">
+                                      <label class="card-title">State:</label> {% if DATA_VIEW.leadID.state %} {{DATA_VIEW.leadID.state|capfirst}} {% else %} {{'N/A'}}{% endif %}
+                                  </div>
+                              </div>
+                              <div class="row col-md-12">
+                                  <div class="col-12 col-md-4 col-xl-12">
+                                      <label class="card-title">Country:</label> {% if DATA_VIEW.leadID.country %} {{DATA_VIEW.leadID.country|capfirst}} {% else %} {{'N/A'}}{% endif %}
+                                  </div>
+                              </div>
+                              <div class="row col-md-12">
+                                  <div class="col-12 col-md-4 col-xl-12">
+                                      <label class="card-title">Description:</label> {% if DATA_VIEW.leadID.description %} {{DATA_VIEW.leadID.description}} {% else %} {{'N/A'}}{% endif %}
+                                  </div>
+                              </div>
+                              <div class="row col-md-12">
+                                  <div class="col-12 col-md-4 col-xl-12">
+                                      <label class="card-title">Date of event:</label> {% if DATA_VIEW.leadID.date_of_event %} {{DATA_VIEW.leadID.date_of_event|date:"d-m-Y"}} {% else %} {{'N/A'}}{% endif %}
+                                  </div>
+                              </div>
+                              <div class="row col-md-12">
+                                  <div class="col-12 col-md-4 col-xl-12">
+                                      <label class="card-title">Time of Event:</label> {% if DATA_VIEW.leadID.time_of_event %} {{DATA_VIEW.leadID.time_of_event|time:"h:i A"}} {% else %} {{'N/A'}}{% endif %}
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  </div>
+</div>
+
+{% endblock content %}
+{% block custom_js %}
+<!-- Plugin js for this page -->
+<script src="{% static 'assets/vendors/datatables.net/jquery.dataTables.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+<script src="{% static 'assets/js/data-table.js' %}"></script>
+<!-- End plugin js for this page -->
+<script>
+  $(document).ready(function () {
+    $('#createFormValidation').validate({
+        rules: {
+          comments: {
+                required: true,
+            },
+            status: {
+                  required: true,
+              },
+        },
+        submitHandler: function(form) {
+            if ($("#createFormValidation").validate().checkForm()) {
+                $('.requestbutton').addClass('disabled').attr('disabled', true);
+                $(".cancelbutton").addClass("disabled");
+                form.submit();
+            }
+        }
+    })
+
+    $("#datalist_table").DataTable({
+        paging: true,
+        bLengthChange: false,
+        searching: false,
+        responsive: true,
+        searchDelay: 500,
+        processing: true,
+        bInfo:false,
+    });
+
+  });
+
+</script>
+{% endblock %}

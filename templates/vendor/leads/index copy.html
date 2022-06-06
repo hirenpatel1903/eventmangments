@@ -1,0 +1,139 @@
+{% extends 'base/base.html' %}
+<!-- LOAD STATIC -->
+{% load static %}
+<!-- SET TITLE -->
+{% block title %} {% include 'base/partials/title.html' with title='Lead Listing' %} {% endblock %} 
+{% block custom_css %}
+<link rel="stylesheet" href="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.css' %}"/>
+<link rel="stylesheet" href="{% static 'assets/vendors/mdi/css/materialdesignicons.min.css' %}"/>
+<!-- End plugin css for this page -->
+{% endblock %} 
+{% block content %}
+
+<div class="page-content">
+  <nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'leadIndexVendor'%}">Leads</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Accepted Leads Details</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-title d-flex justify-content-between align-items-center">Accepted Leads Details</h6>
+          <div class="table-responsive app-table">
+            <table id="datalist_table" class="table">
+              <thead>
+                <tr>
+                  <th>No</th>
+                  <th>Lead Details</th>
+                  <th>Mobile Number</th>
+                  <th>Comment</th>
+                  <th>Status</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for DATA in DATA_LIST %}
+                  <tr id="{{forloop.counter}}">
+                    <td>{{ forloop.counter }}</td>
+                    <td>
+                      <p><strong>Name: </strong>{{DATA.leadID.name|capfirst}}<p>
+                      <p><strong>City: </strong>{{DATA.leadID.city|capfirst}}<p>
+                      {% if DATA.lead_status.value == "New" or DATA.lead_status.value == "Accepted" %}
+                      <p><strong>Email: </strong>{{DATA.leadID.email}}<p>
+                      {% endif %}
+                    </td>
+                    <td><a class="text-body" href="tel:{{ DATA.leadID.mobile_number }}">{{ DATA.leadID.mobile_number }}</a></td>
+                    <td>
+                      {{ DATA.last_comments|default:"N/A" }}
+                      {% comment %} <p class="pt-4">
+                        <a class="text-reset" data-bs-toggle="modal" data-bs-target="#exampleModal"><em>View Comment</em></a>
+                      </p> {% endcomment %}
+                    </td>
+                    <td>
+                      {% if DATA.lead_status.value == "New" %}
+                        <div class="d-grid">
+                          <span class="badge bg-success">{{DATA.lead_status.value}}</span>
+                        </div>
+                      {% elif DATA.lead_status.value == "Rejected" %}
+                        <div class="d-grid">
+                          <span class="badge bg-danger">{{DATA.lead_status.value}}</span>
+                        </div>
+                      {% elif DATA.lead_status.value == "Pending" %}
+                        <div class="d-grid">
+                          <span class="badge bg-warning">{{DATA.lead_status.value}}</span>
+                        </div>
+                      {% elif DATA.lead_status.value == "Accepted" %}
+                        <div class="d-grid">
+                          <span class="badge bg-success">New</span>
+                        </div>
+                      {% else %}
+                      <div class="d-grid">
+                        <span class="badge bg-info">{{DATA.lead_status.value}}</span>
+                      </div>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <div class="form-check {% if DATA.lead_status.value == "Rejected" %}sweetButton{% else %} "" {% endif %}">
+                        <a class="viewbutton {% if DATA.lead_status.value == "Rejected" %}buttondis{% else %} "" {% endif %}" data-id="{{DATA.id}}" href="{% url 'leadViewVendor' DATA.id %}"><i data-feather="eye"></i></a>
+                        <a class="editbutton {% if DATA.lead_status.value == "Rejected" %}buttondis{% else %} "" {% endif %}" target="_blank" href="{{WHATSAPP_URL}}{{ DATA.leadID.mobile_number }}{{WHATSAPP_MESSAGE}}"><i class="mdi mdi-whatsapp mdi-24px" aria-hidden="true"></i></a>
+                      </div>
+                    </td>
+                  </tr>
+                {% empty %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+{% block custom_js %}
+<!-- Plugin js for this page -->
+<script src="{% static 'assets/vendors/datatables.net/jquery.dataTables.js' %}"></script>
+<script src="{% static 'assets/vendors/datatables.net-bs4/dataTables.bootstrap4.js' %}"></script>
+<script src="{% static 'assets/js/data-table.js' %}"></script>
+<!-- End plugin js for this page -->
+<script>  
+  $(document).ready(function () {    
+
+    $("#datalist_table").DataTable({
+      bLengthChange: false,
+      searching: true,
+      responsive: true,
+      searchDelay: 500,
+      processing: true,
+      bInfo:false,
+      paging:   true,
+      language: { 
+        search: "",
+        searchPlaceholder: "Search records" 
+      },
+    });
+
+    $('.sweetButton').on('click',function(){
+      var m = "Status is Rejected so you can't view the lead.";
+      const Toast = Swal.mixin({
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+        });
+      
+      Toast.fire({
+          icon: 'error',
+          title: m
+      }) 
+    });
+
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+<div class="modal fade" id="commentHistory" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="commentHistoryLabel">Comment History</h5>{{data}}
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="btn-close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="table-responsive">
+          <table class="table table-bordered" id="commentHistory_table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Comment</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for obj in data %}
+              <tr id="{{forloop.counter}}">
+                <td>{{ forloop.counter }}</td>
+                <td>{{obj.leadAssignedId.last_comments}}</td>
+                <td>{{obj.status.value}}</td>
+                <td>{{obj.leadAssignedId.last_status_updated_time|date:"d M y, h:m A"}}</td>
+              </tr>
+              {% empty %}
+              <td colspan="4" class="text-center">No Data Found</td>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

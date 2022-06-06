@@ -1,0 +1,159 @@
+{% extends 'base/base.html' %}
+<!-- LOAD STATIC -->
+{% load static %}
+<!-- SET TITLE -->
+{% block title %} {% include 'base/partials/title.html' with title='Create Lead' %} {% endblock %} {% block content %}
+
+<div class="page-content">
+  <nav class="page-breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="{% url 'leadIndex'%}">Leads</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Create Lead</li>
+    </ol>
+  </nav>
+
+  <div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <h6 class="card-title">Create Lead</h6>
+          <form action="{% url 'leadStore' %}" method="POST" id="createFormValidation" novalidate="novalidate" enctype="multipart/form-data">
+            {% csrf_token %}  
+            {% include "errormessage.html" %}
+
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="mb-3">
+                  <label class="form-label">Name</label>
+                  <input type="text" class="form-control" id="name" name="name" placeholder="Name">
+                </div>
+              </div><!-- Col -->
+              <div class="col-sm-4">
+                <div class="mb-3">
+                  <label class="form-label">Email</label>
+                  <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+                </div>
+              </div><!-- Col -->
+              <div class="col-sm-4">
+                <div class="mb-3">
+                  <label class="form-label">Mobile Number</label>
+                  <input type="text" class="form-control" id="mobile_number" name="mobile_number" placeholder="Mobile Number">
+                </div>
+              </div><!-- Col -->  
+            </div>
+            <div class="row">
+              <div class="col-sm-4">
+                <div class="mb-3">
+                  <label for="city" class="form-label">City</label>
+                  <input type="text" class="form-control" name="city" id="city" placeholder="City">
+                </div>
+              </div><!-- Col -->
+              <div class="col-sm-4">
+                <div class="mb-3">
+                  <label class="form-label">State</label>
+                  <input type="text" class="form-control" id="state" name="state" placeholder="State">
+                </div>
+              </div><!-- Col -->
+              <div class="col-sm-4">
+                <div class="mb-3">
+                  <label class="form-label">Country</label>
+                  <input type="text" class="form-control" id="country" name="country" placeholder="Country">
+                </div>
+              </div><!-- Col -->
+            </div>
+            <div class="row">           
+              <div class="col-sm-6">
+                <div class="mb-3">
+                  <label class="form-label">Address</label>
+                  <textarea class="form-control" name="address" id="address" rows="3" placeholder="Address"></textarea>
+                </div>
+              </div><!-- Col -->
+              <div class="col-sm-6">
+                <div class="mb-3">
+                  <label class="form-label">Description</label>
+                  <textarea class="form-control" id="description" name="description" rows="3" placeholder="Description"></textarea>
+                </div>
+              </div><!-- Col -->
+            </div><!-- Row -->
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="mb-3">
+                  <label class="form-label">Date of Event</label>
+                  <input type="date" class="form-control" id="date_of_event" name="date_of_event">
+                </div>
+              </div><!-- Col -->
+              <div class="col-sm-6">
+                <div class="mb-3">
+                  <label for="city" class="form-label">Time of Event</label>
+                  <input type="time" class="form-control" name="time_of_event" id="time_of_event">
+                </div>
+              </div><!-- Col -->
+            </div><!-- Row -->
+            
+            <button type="submit" class="btn btn-primary me-2">Submit</button>
+            <a href="{% url 'leadIndex' %}" class="btn btn-secondary cancelbutton">Cancel</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+{% block custom_js %}
+<script>
+  $(document).ready(function () {
+    $('#createFormValidation').validate({
+      rules: {
+          name: {
+              required: true,
+              maxlength: 50,
+          },
+          email: {
+              required: true,
+              maxlength: 50,
+              email: true
+          },
+          mobile_number: {
+              required: true,
+              maxlength : 15,
+              number: true,
+              validphone: true,
+          },
+          address: {
+              required: true,
+          },
+          country: {
+              required: true,
+              maxlength: 50,
+          },
+          state: {
+              required: true,
+              maxlength: 50,
+          },
+          city: {
+              required: true,
+              maxlength: 50,
+          },
+          date_of_event: {
+              required: true,
+          },
+          time_of_event: {
+              required: true,
+          },
+          description: {
+              required: true,
+          },
+      },
+      submitHandler: function(form) {
+          if ($("#createFormValidation").validate().checkForm()) {
+              $('.requestbutton').addClass('disabled').attr('disabled', true);
+              $(".cancelbutton").addClass("disabled");
+              form.submit();
+          }
+      }
+    })
+  });
+
+</script>
+{% endblock %}
