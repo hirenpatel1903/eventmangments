@@ -4,7 +4,6 @@ app/dao/__pycache__/*
 app/migrations/__pycache__/*
 app/web_views/__pycache__/*
 media/*
-db/*
 eventstry/__pycache__/*
 
 # Django #

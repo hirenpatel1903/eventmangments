@@ -1,0 +1,42 @@
+# # ---- Step-follow start this project
+- python manage.py migrate
+- python manage.py createsuperuser
+    username:superadmin
+    email:superadmin@einzgartige.in
+    pass:admin@123
+- python manage.py runserver
+
+# Debug in django
+- print('hello');
+
+# # ---- Django Command
+
+# create new migration 
+- python manage.py make:migration migration_name
+- python manage.py migrate
+
+# # ---- Event Managment Credatinal
+
+# Admin Login Details
+url:- http://127.0.0.1:8000/login/
+email:- admin@einzigartige.com
+pass:- admin@123
+
+# Super-Admin Login Details
+url:- http://127.0.0.1:8000/admin/login/
+email:- superadmin@einzigartige.com
+pass:- admin@123
+
+# Vendor Login Details
+url:- http://127.0.0.1:8000/login/
+email:- hiren@einzigartige.com
+pass:- Hiren@123
+
+# # ---- DONT"USE This Details
+
+EMAIL_BACKEND='django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST='smtp.gmail.com'
+EMAIL_USE_TLS=True
+EMAIL_PORT=587
+EMAIL_HOST_USER='app.appringer@gmail.com'
+EMAIL_HOST_PASSWORD='qlwnyjcztoabixjw'
