@@ -9,6 +9,7 @@
 # Debug in django
 - print('hello');
 
+
 # # ---- Django Command
 
 # create new migration 
